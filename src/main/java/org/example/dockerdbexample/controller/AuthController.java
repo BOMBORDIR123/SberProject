@@ -15,7 +15,9 @@ import org.example.dockerdbexample.security.jwt.JwtService;
 import org.example.dockerdbexample.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,15 +55,17 @@ public class AuthController {
                 // 3. Генерируем JWT с ролями
                 String jwtToken = jwtService.generateJwtToken(user.getPhoneNumber(), user.getRoles());
 
-                // 4. Создаем httpOnly cookie
-                Cookie jwtCookie = new Cookie("__Host-auth-token", jwtToken);
-                jwtCookie.setHttpOnly(true);
-                jwtCookie.setSecure(true); // Для работы через HTTPS, можешь отключить в dev-окружении
-                jwtCookie.setPath("/");
-                jwtCookie.setMaxAge(180 * 24 * 60 * 60); // Время жизни куки - 180 дней
+                ResponseCookie responseCookie = ResponseCookie.from("auth-token", jwtToken)
+                        .httpOnly(true)    // доступность только через HTTP
+                        .secure(true)      // обязательное для работы с SameSite=None
+                        .path("/")         // доступность на всех путях
+                        .maxAge(180 * 24 * 60 * 60)  // Время жизни куки
+                        .sameSite("None")   // Разрешает межсайтовые запросы
+                        .build();
 
-                // 5. Добавляем куки в response
-                response.addCookie(jwtCookie);
+                response.setHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
+
+
                 UserDto dto = userService.toDto(user);
 
                 return new ResponseEntity<>(dto, HttpStatus.OK);

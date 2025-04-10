@@ -6,7 +6,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 import org.example.dockerdbexample.security.CustomUserDetails;
 import org.example.dockerdbexample.security.CustomUserService;
 import org.springframework.lang.NonNull;
@@ -19,56 +19,62 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private JwtService jwtService;
-    private CustomUserService userDetailsService; // Сервис для получения пользователя из БД
+    private final JwtService jwtService;
+    private final CustomUserService userDetailsService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        // 1. Извлечение JWT токена из куки
+        // Извлечение JWT токена из куки
         String jwtToken = extractJwtFromCookies(request);
-        // 2. Проверка, есть ли токен и не авторизован ли уже пользователь
+        log.debug("Попытка извлечь JWT токен из куки...");
+
+        // Проверка, есть ли токен и не авторизован ли уже пользователь
         if (jwtToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            try {
+                // Валидация токена
+                if (jwtService.validateJwtToken(jwtToken)) {
+                    // Извлечение номера телефона из токена
+                    String phoneNumber = jwtService.getPhoneNumberFromToken(jwtToken);  // Измените метод для получения телефона
+                    log.debug("Токен валиден, извлечён номер телефона: {}", phoneNumber);
 
-            // 3. Валидация токена
-            if (jwtService.validateJwtToken(jwtToken)) {
-                // 4. Извлечение email (или username) из токена
-                String number = jwtService.getEmailFromToken(jwtToken);
+                    // Загрузка пользователя из базы данных
+                    CustomUserDetails customUserDetails = userDetailsService.loadUserByUsername(phoneNumber);
 
-                // 5. Загрузка пользователя из базы данных
-                CustomUserDetails customUserDetails = userDetailsService.loadUserByUsername(number);
+                    // Создание объекта для Spring Security
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    customUserDetails, null, customUserDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // 6. Создание объекта для Spring Security
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                customUserDetails, null, customUserDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                // 7. Установка авторизации в SecurityContext
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    // Установка авторизации в SecurityContext
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    log.debug("Пользователь {} успешно аутентифицирован.", phoneNumber);
+                } else {
+                    log.warn("Невалидный JWT токен.");
+                }
+            } catch (Exception e) {
+                log.error("Ошибка при обработке JWT токена: {}", e.getMessage(), e);
             }
         }
 
-        // 8. Продолжение цепочки фильтров
+        // Продолжение цепочки фильтров
         filterChain.doFilter(request, response);
     }
 
     private String extractJwtFromCookies(HttpServletRequest request) {
-        // Получение всех куки
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            // Поиск куки с названием JWT
-            return Arrays.stream(cookies)
-                    .filter(cookie -> "__Host-auth-token".equals(cookie.getName()))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .orElse(null);
-        }
-        return null;
-    }
+        if (request.getCookies() == null) return null;
 
+        return Arrays.stream(request.getCookies())
+                .filter(cookie -> "auth-token".equals(cookie.getName()))  // Убедитесь, что куки имеют это имя
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElse(null);
+    }
 }

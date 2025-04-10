@@ -91,4 +91,14 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+    public String getPhoneNumberFromToken(String jwtToken) {
+        Claims claims = Jwts.parser()
+                .verifyWith(getSignKey())
+                .build()
+                .parseSignedClaims(jwtToken)
+                .getBody();
+        return claims.getSubject(); // предполагаем, что номер телефона хранится как subject
+    }
+
 }

@@ -42,6 +42,7 @@ public class UserController {
         // Получаем текущую аутентификацию из SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String number = authentication.getName();
+
         logger.info("Пользователь аутентифицирован: {}", number);
 
         try {
