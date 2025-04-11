@@ -1,0 +1,177 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 130px;
+  height: 100vh;
+  margin: 20px;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+
+  &__image {
+    width: 65px;
+    height: 65px;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+
+  &__basic {
+    width: 400px;
+  }
+
+  &__title {
+    color: #76b889;
+    font-size: 40px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  &__subtitle {
+    color: #2f2f2f;
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 40px;
+    line-height: 25px;
+    width: 110px;
+  }
+
+  &__welcome {
+    color: #2f2f2f;
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 40px;
+    line-height: 25px;
+
+    &_mobile {
+      display: none;
+    }
+  }
+
+  &__item {
+    margin-bottom: 15px;
+  }
+
+  &__send {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+
+    & button {
+      background: #263238;
+      font-size: 18px;
+      font-weight: 500;
+      padding: 10px 50px;
+      height: 40px;
+      border-radius: 14px;
+      color: #fff;
+      cursor: pointer;
+      transition: opacity 0.3s;
+
+      &:hover {
+        opacity: 0.8;
+        background: #263238 !important;
+        color: #fff !important;
+      }
+    }
+  }
+
+  &__login {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #9e9e9e;
+    margin-top: 20px;
+    margin-bottom: 5px;
+
+    &_line {
+      width: 200px;
+      border-top: 2px solid #d6d6d6;
+    }
+
+    &_wrapper {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  &__loginButton {
+    color: #76b889;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+
+    transition: opacity 0.3s;
+
+    &:hover {
+      opacity: 0.8;
+      color: #76b889;
+    }
+  }
+}
+
+@media (max-width: 1000px) {
+  .container {
+    margin: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    align-items: flex-start;
+  }
+
+  .logo {
+    justify-content: start;
+    gap: 0;
+
+    &__image {
+      width: 45px;
+      height: 45px;
+    }
+  }
+
+  .form {
+    &__welcome {
+      display: none;
+
+      &_mobile {
+        display: block;
+        color: #2f2f2f;
+        font-size: 24px;
+        font-weight: 500;
+        margin-bottom: 30px;
+        line-height: 25px;
+        text-align: center;
+      }
+    }
+
+    &__send {
+      & button {
+        padding: 20px 100px;
+      }
+    }
+
+    &__subtitle {
+      font-size: 20px;
+      line-height: 20px;
+      margin-bottom: 30px;
+    }
+  }
+}
+
+@media (max-width: 450px) {
+  .form {
+    &__basic {
+      width: 300px;
+    }
+  }
+}

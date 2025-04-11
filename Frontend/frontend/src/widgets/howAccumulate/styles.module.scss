@@ -1,0 +1,27 @@
+.block__scroll_action{
+    display: flex;
+    margin-left: 5em;
+    overflow-x: auto;
+    width: 87%;
+}
+
+.title{
+    font-size: 36px;
+    padding-left: 3em;
+}
+
+.block__about_bonuse{
+    display: flex;
+    flex-direction: column;
+    padding: 2em;
+    margin: 1em;
+    background: #F6F9F7;
+    border-radius: 39px;
+    text-align: center;
+    align-items: center;
+    vertical-align: top;
+}
+
+.take__everything{
+    white-space: nowrap;
+}

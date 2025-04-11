@@ -1,0 +1,20 @@
+.button__bonuses{
+    display: flex;
+    align-items: center;
+    background: #263238;
+    color: #76B889;
+    border-radius: 15px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    justify-content: space-between;
+}
+
+.bonus{
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.center__bonuses{
+    text-align: center;
+}
