@@ -54,6 +54,10 @@
     height: 20px;
   }
 
+  & a {
+    color: #000;
+  }
+
   &:hover {
     opacity: 0.5;
   }

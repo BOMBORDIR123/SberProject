@@ -4,6 +4,7 @@ import arrowRight from "@/assets/arrowRight.png";
 import traceImage from "@/assets/trace.png";
 import { Select } from "antd";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Indicators = () => {
   const { currentUser } = useSelector((state: any) => state.currentUser);
@@ -19,7 +20,8 @@ const Indicators = () => {
           </div>
           <p className={styles.balance__bonus}>эко-бонуса</p>
           <div className={styles.history}>
-            <p>История эко-бонусов</p> <img src={arrowRight} alt="arrowRight" />
+            <Link to="/history">История эко-бонусов</Link>{" "}
+            <img src={arrowRight} alt="arrowRight" />
           </div>
         </div>
         <div className={styles.trace}>
@@ -44,9 +46,6 @@ const Indicators = () => {
             ]}
             className={styles.select}
           />
-          <div className={styles.history}>
-            <p>Посмотреть историю</p> <img src={arrowRight} alt="arrowRight" />
-          </div>
         </div>
       </div>
     </>

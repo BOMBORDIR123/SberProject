@@ -14,7 +14,8 @@ services:
 
   backend:
     build:
-      context: /
+      context: ./Backend/DockerDBExample
+      dockerfile: Dockerfile
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/exampledb
       SPRING_DATASOURCE_USERNAME: "********"
@@ -26,8 +27,11 @@ services:
 
   frontend:
     build:
-      context: \frontend
+      context: ./Frontend/frontend
+      dockerfile: Dockerfile
     ports:
       - "8081:80"
     depends_on:
       - backend
+    environment:
+      - VITE_API_URL=http://localhost:8080

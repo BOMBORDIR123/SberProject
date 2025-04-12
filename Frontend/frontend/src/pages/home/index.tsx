@@ -1,7 +1,7 @@
 import AccumulationBonuses from "@/widgets/accumulationBonuses";
 import Indicators from "@/widgets/indicators";
 import styles from "./styles.module.scss";
-import { useGetReceipts } from "./api/useGetReceipts";
+import { useGetReceipts } from "../history/api/useGetReceipts";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useUserMe } from "@/shared/providers/api/useUserMe";
@@ -13,7 +13,6 @@ const HomePage = () => {
   const [isReceipts, setIsReceipts] = useState(false);
   const { currentUser } = useSelector((state: any) => state.currentUser);
 
-  const { data } = useGetReceipts(isReceipts);
   const { data: user, refetch } = useUserMe();
 
   useEffect(() => {

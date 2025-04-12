@@ -14,8 +14,6 @@ const AppRouter = () => {
 
   const { data, isSuccess } = useUserMe();
 
-  console.log("data", data);
-
   useEffect(() => {
     if (isSuccess) {
       navigate("/home");
@@ -25,15 +23,19 @@ const AppRouter = () => {
     }
   }, [user, data]);
 
-  console.log("user", user);
-
   return (
     <Routes>
       {user ? (
-        <Route
-          path={routeConfig[AppRoutes.HOME].path}
-          element={routeConfig[AppRoutes.HOME].element}
-        />
+        <>
+          <Route
+            path={routeConfig[AppRoutes.HOME].path}
+            element={routeConfig[AppRoutes.HOME].element}
+          />
+          <Route
+            path={routeConfig[AppRoutes.HISTORY].path}
+            element={routeConfig[AppRoutes.HISTORY].element}
+          />
+        </>
       ) : (
         <>
           <Route
